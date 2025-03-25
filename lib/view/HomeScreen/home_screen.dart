@@ -44,7 +44,9 @@ class HomeScreen extends StatelessWidget {
             labelText: 'Driver Name',
             hintText: "Driver Name",
             controller: context.read<VehicleJourneyEntryProvider>().driverName,
-            onTap: () {},
+            onTap: () {
+              _showDriverNameModal(context);
+            },
           ),
           SizedBox(height: height * 0.02),
 
@@ -64,6 +66,9 @@ class HomeScreen extends StatelessWidget {
             width: double.infinity,
             buttonText: 'Submit',
             buttonColor: AppColor.primaryColor,
+            onTap: () {
+              context.read<VehicleJourneyEntryProvider>().submit(context);
+            },
           ),
         ],
       ),
@@ -73,7 +78,9 @@ class HomeScreen extends StatelessWidget {
   /// Vehicle Number Bottom Sheet
   void _showVehicleNumberModal(BuildContext context) {
     final vehicleProvider = context.read<VehicleJourneyEntryProvider>();
-    vehicleProvider.getVehicleNumberList(context); // Fetch word number list
+    vehicleProvider.getVehicleNumberList(context);
+
+    /// Fetch vehicle number list
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -99,26 +106,29 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                ListView.builder(
-                  itemCount: vehicleProvider.vehicleNumberList.length,
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.only(left: 16),
-                  itemBuilder: (context, index) {
-                    final vehicleRecord =
-                        vehicleProvider.vehicleNumberList[index];
-                    return ListTile(
-                      title: Text(
-                        vehicleRecord.vehicleNo ?? '',
-                        style: const TextStyle(color: Colors.black),
-                      ),
-                      onTap: () {
-                        vehicleProvider.vehicleNumber.text =
-                            vehicleRecord.vehicleNo ?? '';
-                        vehicleProvider.setSelectedVehicle(vehicleRecord);
-                        Navigator.pop(context); // Close the modal
-                      },
-                    );
-                  },
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: vehicleProvider.vehicleNumberList.length,
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.only(left: 16),
+                    physics: const BouncingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      final vehicleRecord =
+                          vehicleProvider.vehicleNumberList[index];
+                      return ListTile(
+                        title: Text(
+                          vehicleRecord.vehicleNo ?? '',
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                        onTap: () {
+                          vehicleProvider.vehicleNumber.text =
+                              vehicleRecord.vehicleNo ?? '';
+                          vehicleProvider.setSelectedVehicle(vehicleRecord);
+                          Navigator.pop(context); // Close the modal
+                        },
+                      );
+                    },
+                  ),
                 ),
               ],
             );
@@ -131,7 +141,9 @@ class HomeScreen extends StatelessWidget {
   /// Word No Modal Bottom Sheet
   void _showWordNoModal(BuildContext context) {
     final vehicleProvider = context.read<VehicleJourneyEntryProvider>();
-    vehicleProvider.getWordNo(context); // Fetch word number list
+    vehicleProvider.getWordNo(context);
+
+    /// Fetch word number list
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -184,10 +196,12 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  /// Word No Modal Bottom Sheet
+  /// Workers Name Modal Bottom Sheet
   void _showWorkersNameModal(BuildContext context) {
     final vehicleProvider = context.read<VehicleJourneyEntryProvider>();
-    vehicleProvider.getWorkersNameList(context); // Fetch word number list
+    vehicleProvider.getWorkersNameList(context);
+
+    /// Fetch workers name list
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -228,6 +242,65 @@ class HomeScreen extends StatelessWidget {
                         vehicleProvider.workersName.text =
                             workersName.workersname ?? '';
                         vehicleProvider.setSelectedWorkersName(workersName);
+                        Navigator.pop(context); // Close the modal
+                      },
+                    );
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  /// Driver Name Modal Bottom Sheet
+  void _showDriverNameModal(BuildContext context) {
+    final vehicleProvider = context.read<VehicleJourneyEntryProvider>();
+    vehicleProvider.getDriverNameList(context);
+
+    /// Fetch driver name list
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      backgroundColor: AppColor.secondaryColor,
+      builder: (BuildContext context) {
+        return Consumer<VehicleJourneyEntryProvider>(
+          builder: (context, vehicleProvider, _) {
+            if (vehicleProvider.driverNameList.isEmpty) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, top: 18),
+                  child: Text(
+                    'Drivers Name',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                ListView.builder(
+                  itemCount: vehicleProvider.driverNameList.length,
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.only(left: 16),
+                  itemBuilder: (context, index) {
+                    final driversName = vehicleProvider.driverNameList[index];
+                    return ListTile(
+                      title: Text(
+                        driversName.drivername ?? '',
+                        style: const TextStyle(color: Colors.black),
+                      ),
+                      onTap: () {
+                        vehicleProvider.driverName.text =
+                            driversName.drivername ?? '';
+                        vehicleProvider.setSelectedDriverName(driversName);
                         Navigator.pop(context); // Close the modal
                       },
                     );

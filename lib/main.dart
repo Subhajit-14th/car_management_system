@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:municipality_car_management_system/providers/auth_providers.dart';
 import 'package:municipality_car_management_system/providers/screen_route_provider.dart';
 import 'package:municipality_car_management_system/providers/vehicle_journey_entry_provider.dart';
+import 'package:municipality_car_management_system/providers/vehicle_journey_history_provider.dart';
 import 'package:municipality_car_management_system/services/dependency_services.dart';
 import 'package:municipality_car_management_system/services/hive_services.dart';
 import 'package:municipality_car_management_system/utlis/assets/app_colors.dart';
@@ -25,6 +26,8 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (context) => ScreenRouteProvider()),
         ChangeNotifierProvider(
             create: (context) => VehicleJourneyEntryProvider()),
+        ChangeNotifierProvider(
+            create: (context) => VehicleJourneyHistoryProvider()),
       ],
       child: const MyApp(),
     ),

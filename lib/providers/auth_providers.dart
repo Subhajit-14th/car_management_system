@@ -41,6 +41,19 @@ class AuthProviders extends ChangeNotifier {
   /// Login Function
   void login(BuildContext context) async {
     _isLoading = true;
+    if (_phoneNumberController.text.isEmpty &&
+        _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Please fill the phone number and password field"),
+          backgroundColor: AppColor.primaryColor,
+          duration: Duration(seconds: 3),
+        ),
+      );
+      _isLoading = false;
+      notifyListeners();
+      return;
+    }
     _loginApiResModel = await _loginController.login(
       phone: _phoneNumberController.text,
       password: _passwordController.text,
@@ -59,13 +72,15 @@ class AuthProviders extends ChangeNotifier {
       _checkAuthentication();
       _isLoading = false;
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("${_loginApiResModel.msg}"),
-          backgroundColor: AppColor.primaryColor,
-          duration: Duration(seconds: 3),
-        ),
-      );
+      if (_loginApiResModel.msg != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("${_loginApiResModel.msg}"),
+            backgroundColor: AppColor.primaryColor,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
       _isLoading = false;
     }
     notifyListeners();

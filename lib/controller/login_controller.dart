@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:municipality_car_management_system/model/LoginModel/login_api_res_model.dart';
 import 'package:municipality_car_management_system/services/dependency_services.dart';
+import 'package:municipality_car_management_system/utlis/assets/app_colors.dart';
 
 class LoginController {
   final dio = getIt<Dio>();
@@ -30,8 +31,8 @@ class LoginController {
       debugPrint('Platfrom Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Custom Snackbar"),
-          backgroundColor: Colors.blueAccent,
+          content: Text("Platfrom Error: $e"),
+          backgroundColor: AppColor.primaryColor,
           duration: Duration(seconds: 3),
         ),
       );
@@ -40,15 +41,15 @@ class LoginController {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Dio Exception: $e"),
-          backgroundColor: Colors.blueAccent,
+          backgroundColor: AppColor.primaryColor,
         ),
       );
     } catch (e) {
       debugPrint('My Login Api Error is: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Dio Exception: $e"),
-          backgroundColor: Colors.blueAccent,
+          content: Text("My Login Api Error is: $e"),
+          backgroundColor: AppColor.primaryColor,
           duration: Duration(seconds: 3),
         ),
       );
