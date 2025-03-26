@@ -9,6 +9,7 @@ class CommonTextField extends StatelessWidget {
     required this.controller,
     this.onTap,
     this.suffixIconData,
+    this.onChanged,
   });
 
   final TextEditingController controller;
@@ -16,6 +17,7 @@ class CommonTextField extends StatelessWidget {
   final String hintText;
   final Function()? onTap;
   final IconData? suffixIconData;
+  final Function(String)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,7 @@ class CommonTextField extends StatelessWidget {
       ),
       readOnly: onTap == null ? false : true,
       onTap: onTap,
+      onChanged: onChanged,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: const TextStyle(

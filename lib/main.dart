@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:municipality_car_management_system/providers/auth_providers.dart';
+import 'package:municipality_car_management_system/providers/reports_provider.dart';
 import 'package:municipality_car_management_system/providers/screen_route_provider.dart';
 import 'package:municipality_car_management_system/providers/vehicle_journey_entry_provider.dart';
 import 'package:municipality_car_management_system/providers/vehicle_journey_history_provider.dart';
@@ -28,6 +29,7 @@ Future<void> main() async {
             create: (context) => VehicleJourneyEntryProvider()),
         ChangeNotifierProvider(
             create: (context) => VehicleJourneyHistoryProvider()),
+        ChangeNotifierProvider(create: (context) => ReportsProvider()),
       ],
       child: const MyApp(),
     ),

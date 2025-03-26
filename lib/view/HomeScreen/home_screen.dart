@@ -67,7 +67,30 @@ class HomeScreen extends StatelessWidget {
             buttonText: 'Submit',
             buttonColor: AppColor.primaryColor,
             onTap: () {
-              context.read<VehicleJourneyEntryProvider>().submit(context);
+              if (context
+                          .read<VehicleJourneyEntryProvider>()
+                          .vehicleNumber
+                          .text !=
+                      "" &&
+                  context.read<VehicleJourneyEntryProvider>().wordNo.text !=
+                      "" &&
+                  context.read<VehicleJourneyEntryProvider>().driverName.text !=
+                      "" &&
+                  context
+                          .read<VehicleJourneyEntryProvider>()
+                          .workersName
+                          .text !=
+                      "") {
+                context.read<VehicleJourneyEntryProvider>().submit(context);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Please fill all the fields'),
+                    backgroundColor: AppColor.primaryColor,
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              }
             },
           ),
         ],
