@@ -44,7 +44,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   controller:
                       context.read<ReportsProvider>().startDateController,
                   suffixIconData: Icons.calendar_month_rounded,
-                  onTap: () {},
+                  onTap: () {
+                    context.read<ReportsProvider>().selectDate(
+                          context,
+                          context.read<ReportsProvider>().startDateController,
+                        );
+                  },
                 ),
               ),
 
@@ -55,7 +60,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   hintText: 'End Date',
                   controller: context.read<ReportsProvider>().endDateController,
                   suffixIconData: Icons.calendar_month_rounded,
-                  onTap: () {},
+                  onTap: () {
+                    context.read<ReportsProvider>().selectDate(
+                          context,
+                          context.read<ReportsProvider>().endDateController,
+                        );
+                  },
                 ),
               ),
             ],
@@ -211,8 +221,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      ReportsDetailsScreen()));
+                                  builder: (context) => ReportsDetailsScreen(
+                                        vehicleNo:
+                                            "${reportsProvider.repostList[index].vehicleNo}",
+                                      )));
                         },
                       ),
                     ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:municipality_car_management_system/providers/auth_providers.dart';
 import 'package:municipality_car_management_system/providers/screen_route_provider.dart';
 import 'package:municipality_car_management_system/utlis/assets/app_colors.dart';
 import 'package:municipality_car_management_system/view/HomeScreen/home_screen.dart';
@@ -57,7 +58,7 @@ class RootScreen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "Dev User",
+                    "User",
                     style: TextStyle(
                       color: AppColor.darkTextColor,
                       fontSize: 20,
@@ -132,7 +133,7 @@ class RootScreen extends StatelessWidget {
                   : null,
               onTap: () {
                 Navigator.pop(context);
-                context.read<ScreenRouteProvider>().setIndex(3);
+                _showLogoutDialog(context);
               },
             ),
           ],
@@ -146,6 +147,46 @@ class RootScreen extends StatelessWidget {
           color: Colors.blue,
         ),
       ][context.watch<ScreenRouteProvider>().selectedIndex],
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: AppColor.secondaryColor,
+          title: Text(
+            "Logout",
+            style: TextStyle(color: AppColor.darkTextColor),
+          ),
+          content: Text(
+            "Are you sure you want to log out?",
+            style: TextStyle(color: AppColor.darkTextColor),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text(
+                "Cancel",
+                style: TextStyle(color: AppColor.primaryColor),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                context.read<AuthProviders>().logout(context);
+              },
+              child: Text(
+                "Yes",
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

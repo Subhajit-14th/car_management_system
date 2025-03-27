@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:municipality_car_management_system/controller/reports_controller.dart';
+import 'package:municipality_car_management_system/model/ReportsModel/reportDetailsApiResModel.dart'
+    as reportDetails;
 import 'package:municipality_car_management_system/model/ReportsModel/reportsApiResModel.dart';
 
 class ReportsProvider extends ChangeNotifier {
@@ -12,6 +14,11 @@ class ReportsProvider extends ChangeNotifier {
 
   ReportsApiResModel _reportsApiResModel = ReportsApiResModel();
   ReportsApiResModel get reportsApiResModel => _reportsApiResModel;
+
+  reportDetails.ReportDetailsApiResModel _reportDetailsApiResModel =
+      reportDetails.ReportDetailsApiResModel();
+  reportDetails.ReportDetailsApiResModel get reportDetailsApiResModel =>
+      _reportDetailsApiResModel;
 
   final ReportsController _reportsController = ReportsController();
 
@@ -31,11 +38,6 @@ class ReportsProvider extends ChangeNotifier {
       _repostList.clear();
       // ✅ Save original data for reset
       _repostList.addAll(_reportsApiResModel.record ?? []);
-      // _reportsApiResModel.record?.forEach(
-      //   (element) {
-      //     _repostList.add(element);
-      //   },
-      // );
       _isDataLoading = false;
     } else {
       _isDataLoading = false;
@@ -58,13 +60,25 @@ class ReportsProvider extends ChangeNotifier {
           "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
       controller.text = formattedDate;
       notifyListeners();
+      filterReports(_searchController.text);
     }
   }
 
   /// Filter report list based on search query
-  /// Filter report list based on search query
   void filterReports(String query) {
-    if (query.isEmpty) {
+    DateTime? startDate;
+    DateTime? endDate;
+
+    // Parse start and end dates if available
+    if (_startDateController.text.isNotEmpty) {
+      startDate = _parseDate(_startDateController.text);
+    }
+
+    if (_endDateController.text.isNotEmpty) {
+      endDate = _parseDate(_endDateController.text);
+    }
+
+    if (query.isEmpty && startDate == null && endDate == null) {
       _repostList.clear();
       _repostList.addAll(_reportsApiResModel.record ?? []);
     } else {
@@ -72,12 +86,57 @@ class ReportsProvider extends ChangeNotifier {
         final vehicleNo = record.vehicleNo?.toLowerCase() ?? '';
         final driverName = record.driverName?.toLowerCase() ?? '';
         final searchQuery = query.toLowerCase();
+        final dateString =
+            record.date ?? ''; // Assuming date is in dd/MM/yyyy format
+        final recordDate = _parseDate(dateString);
 
-        // Check if query matches vehicle number or driver name
-        return vehicleNo.contains(searchQuery) ||
-            driverName.contains(searchQuery);
+        // ✅ Apply search query filter
+        final matchesQuery =
+            vehicleNo.contains(searchQuery) || driverName.contains(searchQuery);
+
+        // ✅ Apply date range filter
+        final isInDateRange = (startDate == null ||
+                recordDate
+                    .isAfter(startDate.subtract(const Duration(days: 1)))) &&
+            (endDate == null ||
+                recordDate.isBefore(endDate.add(const Duration(days: 1))));
+
+        if (query.isEmpty && (startDate != null || endDate != null)) {
+          return isInDateRange; // Date-only filter
+        } else if (query.isNotEmpty && startDate == null && endDate == null) {
+          return matchesQuery; // Query-only filter
+        } else {
+          return matchesQuery && isInDateRange; // Both filters apply
+        }
       }).toList();
     }
     notifyListeners();
+  }
+
+  /// get report details
+  void getReportDetails(context, vehicleNo) async {
+    _isDataLoading = true;
+    notifyListeners();
+    _reportDetailsApiResModel = await _reportsController.getReportDetails(
+        context: context, vehicleNo: vehicleNo);
+    if (_reportDetailsApiResModel.status == 200) {
+      _isDataLoading = false;
+    } else {
+      _isDataLoading = false;
+    }
+    notifyListeners();
+  }
+
+  /// Helper function to parse date from string
+  DateTime _parseDate(String dateString) {
+    final parts = dateString.split('/');
+    if (parts.length == 3) {
+      return DateTime(
+        int.parse(parts[2]), // year
+        int.parse(parts[1]), // month
+        int.parse(parts[0]), // day
+      );
+    }
+    return DateTime.now(); // Return current date if parsing fails
   }
 }

@@ -86,7 +86,8 @@ class AuthProviders extends ChangeNotifier {
     notifyListeners();
   }
 
-  void logout() {
+  void logout(BuildContext context) {
+    HiveDatabase.clearAllData(); // Clear Hive data
     _isAuthenticated = false;
     notifyListeners();
   }
